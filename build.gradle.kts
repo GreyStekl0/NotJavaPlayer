@@ -18,6 +18,7 @@ dependencies {
     implementation("javazoom.jl:JLayer:1.0")
     implementation("org:jaudiotagger:2.0.3")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.1")
 }
 
 tasks.test {

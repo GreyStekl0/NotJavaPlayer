@@ -102,6 +102,41 @@ fun allSoundList(directory: File) {
     }
 }
 
+fun createPlaylist(directory: File) {
+    println("Введите название плейлиста:")
+    val playlistName = readln()
+    val playlist = Playlist(playlistName)
+    createJsonFile(directory, playlist)
+}
+
+fun removePlaylist(directory: File) {
+    println("Введите название плейлиста:")
+    val playlistName = readln()
+    val playerDir = File(directory, ".NotJavaPlayer")
+    val playlist = File(playerDir, "$playlistName.json")
+    playlist.delete()
+}
+
+fun allPlaylist(directory: File) {
+    val playerDir = File(directory, ".NotJavaPlayer")
+    val playlists = playerDir.listFiles() ?: return
+    for (playlist in playlists) {
+        println(playlist.nameWithoutExtension)
+    }
+}
+
+fun listPlaylist(directory: File) {
+    println("Введите название плейлиста:")
+    val playlistName = readln()
+    val playerDir = File(directory, ".NotJavaPlayer")
+    val playlist = File(playerDir, "$playlistName.json")
+    val playlistData = playlist.readText()
+    val playlistDataJson = Json.decodeFromString<Playlist>(playlistData)
+    for (track in playlistDataJson.tracks) {
+        println("${track.artist} - ${track.title}")
+    }
+}
+
 fun main() {
     val directory = start()
     playerFolder(directory)
@@ -126,11 +161,21 @@ fun main() {
             1 -> {
                 allSoundList(directory)
             }
+
             2 -> {
-                println("Введите название плейлиста:")
-                val playlistName = readln()
-                val playlist = Playlist(playlistName)
-                createJsonFile(directory, playlist)
+                createPlaylist(directory)
+            }
+
+            3 -> {
+                removePlaylist(directory)
+            }
+
+            4 -> {
+                allPlaylist(directory)
+            }
+
+            5 -> {
+                listPlaylist(directory)
             }
 
             0 -> {
