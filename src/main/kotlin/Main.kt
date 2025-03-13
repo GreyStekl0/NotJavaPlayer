@@ -1,5 +1,6 @@
 import javazoom.jl.player.Player
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
 import org.jaudiotagger.audio.AudioFileIO
 import org.jaudiotagger.tag.FieldKey
 import java.io.BufferedInputStream
@@ -13,18 +14,12 @@ fun playMp3(filePath: String) {
     player.play()
 }
 
-fun printMp3Metadata(filePath: String) {
-    try {
-        val audioFile = AudioFileIO.read(File(filePath))
-        val tag = audioFile.tag
-        val title = tag.getFirst(FieldKey.TITLE)
-        val artist = tag.getFirst(FieldKey.ARTIST)
-
-        println("Title: $title")
-        println("Artist: $artist")
-    } catch (e: Exception) {
-        e.printStackTrace()
-    }
+fun mp3Metadata(song: File): List<String> {
+    val audioFile = AudioFileIO.read(song)
+    val tag = audioFile.tag
+    val title = tag.getFirst(FieldKey.TITLE)
+    val artist = tag.getFirst(FieldKey.ARTIST)
+    return listOf(title, artist)
 }
 
 @Serializable
@@ -40,49 +35,111 @@ data class Playlist(
     val tracks: MutableList<Track> = mutableListOf(),
 )
 
-fun test() {
-    val track1 = Track("/home/stekl0/Downloads/Anacondaz - Привет, Г..mp3", "Привет, Г", "anacondaz")
-    val track2 = Track("/home/stekl0/Downloads/Anacondaz - Акуле плевать.mp3", "Акуле плевать", "anacondaz")
-    val playlist = Playlist("тест")
-    println(playlist)
+fun start(): File {
+    println(
+        """
+        Здравствуй дорогой пользователь
+        Для работы "NOTJavaPlayer" введите путь к папке с музыкой
+        Или нажмите Enter для использования папки по умолчанию: 
+        """.trimIndent(),
+    )
+    val directory = readln()
+    if (directory.replace(" ", "") == "") {
+        val homeDir = System.getProperty("user.home")
+        return File(homeDir, "Music")
+    } else {
+        return File(directory)
+    }
+}
 
-    val newTrack = Track("/home/stekl0/Downloads/Anacondaz - Дождь.mp3", "Дождь", "anacondaz")
-    playlist.tracks.add(newTrack)
+fun playerFolder(directory: File) {
+    val jsonFolder = File(directory, ".NotJavaPlayer")
+    if (!jsonFolder.exists()) {
+        jsonFolder.mkdir()
+    }
+}
 
-    println(playlist)
-    println(playlist.tracks[0].artist)
+fun allSongs(directory: File): Playlist {
+    val allSongsPlaylist = Playlist("All songs")
+    val files = directory.listFiles() ?: return allSongsPlaylist
+
+    for (file in files) {
+        if (file.isDirectory) {
+            if (!file.name.startsWith(".")) {
+                val subDirPlaylist = allSongs(file)
+                allSongsPlaylist.tracks.addAll(subDirPlaylist.tracks)
+            }
+        } else if (file.name.endsWith(".mp3")) {
+            try {
+                val mp3Data = mp3Metadata(file)
+                val track = Track(file.path, mp3Data[0], mp3Data[1])
+                allSongsPlaylist.tracks.add(track)
+            } catch (e: Exception) {
+                println("Error processing file ${file.path}: ${e.message}")
+            }
+        }
+    }
+
+    return allSongsPlaylist
+}
+
+fun createJsonFile(
+    directory: File,
+    playlist: Playlist,
+) {
+    val playerDir = File(directory, ".NotJavaPlayer")
+    val jsonFile = File(playerDir, "${playlist.name}.json")
+    val result = Json.encodeToString(playlist)
+    jsonFile.writeText(result)
+}
+
+fun allSoundList(directory: File) {
+    val playerDir = File(directory, ".NotJavaPlayer")
+    val allSoundsPlaylist = File(playerDir, "All songs.json").readText()
+    val allSounds = Json.decodeFromString<Playlist>(allSoundsPlaylist)
+    for (track in allSounds.tracks) {
+        println("${track.title} - ${track.artist}")
+    }
 }
 
 fun main() {
-    test()
-//    while (true) {
-//        println("1) Добавить песню")
-//        println("2) Показать список песен")
-//        println("3) Удалить песню")
-//        println("4) Создать плейлист")
-//        println("5) Удалить плейлист")
-//        println("6) Показать все плейлисты")
-//        println("7) Вывести плейлист")
-//        println("8) Включить плейлист")
-//        println("9) Добавить песню в плейлист")
-//        println("10) Убрать песню из плейлиста")
-//        println("11) Включить предыдущую песню")
-//        println("12) Включить следующую песню")
-//        println("12) Повторить текущую песню")
-//        println("0) Выйти\n")
-//
-//        val choice = readln().toInt()
-//        when (choice) {
-//            1 -> {
-//                test()
-//            }
-//            0 -> {
-//                break
-//            }
-//
-//            else -> {
-//                println("Неверный выбор\n")
-//            }
-//        }
-//    }
+    val directory = start()
+    playerFolder(directory)
+    createJsonFile(directory, allSongs(directory))
+    while (true) {
+        println("\nВыберите действие:")
+        println("1) Показать список песен")
+        println("2) Создать плейлист")
+        println("3) Удалить плейлист")
+        println("4) Показать все плейлисты")
+        println("5) Вывести плейлист")
+        println("6) Включить плейлист")
+        println("7) Добавить песню в плейлист")
+        println("8) Убрать песню из плейлиста")
+        println("9) Включить предыдущую песню")
+        println("10) Включить следующую песню")
+        println("11) Повторить текущую песню")
+        println("0) Выйти\n")
+
+        val choice = readln().toInt()
+        when (choice) {
+            1 -> {
+                allSoundList(directory)
+            }
+            2 -> {
+                println("Введите название плейлиста:")
+                val playlistName = readln()
+                val playlist = Playlist(playlistName)
+                createJsonFile(directory, playlist)
+            }
+
+            0 -> {
+                break
+            }
+
+            else -> {
+                println("Неверный выбор\n")
+            }
+        }
+    }
 }
