@@ -1,12 +1,12 @@
 package ui
 
+import javazoom.jlgui.basicplayer.BasicPlayerListener
 import model.Track
 import service.IPlayerService
-import service.PlayerListener
 
 class PlaybackManager(
     private val playerService: IPlayerService,
-    private val playerListener: PlayerListener,
+    private val playerListener: BasicPlayerListener,
 ) {
     private var currentPlaylist: List<Track> = emptyList()
     private var trackIndex = -1

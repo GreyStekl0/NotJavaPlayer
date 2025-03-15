@@ -1,5 +1,6 @@
 package service
 
+import javazoom.jlgui.basicplayer.BasicPlayerListener
 import model.Track
 
 interface IPlayerService {
@@ -9,7 +10,7 @@ interface IPlayerService {
 
     fun playTrack(
         track: Track,
-        listener: PlayerListener,
+        listener: BasicPlayerListener,
     )
 
     fun stopCurrentTrack()

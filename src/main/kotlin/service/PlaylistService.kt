@@ -2,11 +2,11 @@ package service
 
 import model.Playlist
 import model.Track
-import repository.PlaylistRepository
+import repository.IPlaylistRepository
 import java.io.File
 
 class PlaylistService(
-    private val repository: PlaylistRepository,
+    private val repository: IPlaylistRepository,
 ) : IPlaylistService {
     override fun getAllSongs(directory: File): Playlist = repository.getAllSongs(directory)
 
