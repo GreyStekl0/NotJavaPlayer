@@ -12,10 +12,14 @@ class PlayerService {
     private var isPlaying = false
     private var isPaused = false
 
-    fun playTrack(track: Track) {
+    fun playTrack(
+        track: Track,
+        listener: PlayerListener,
+    ) {
         stopCurrentTrack()
 
         basicPlayer = BasicPlayer()
+        basicPlayer?.addBasicPlayerListener(listener)
         try {
             basicPlayer?.open(File(track.path))
             basicPlayer?.play()

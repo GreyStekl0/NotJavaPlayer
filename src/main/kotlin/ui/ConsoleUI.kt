@@ -1,6 +1,7 @@
 package ui
 
 import service.FileService
+import service.PlayerListener
 import service.PlayerService
 import service.PlaylistService
 import java.io.File
@@ -14,12 +15,14 @@ class ConsoleUI(
     private lateinit var playbackManager: PlaybackManager
     private lateinit var playlistHandler: PlaylistHandler
     private lateinit var userInputHandler: UserInputHandler
+    private lateinit var playerListener: PlayerListener
 
     fun start() {
         musicDirectory = requestMusicDirectory()
         fileService.createPlayerFolder(musicDirectory)
 
-        playbackManager = PlaybackManager(playerService)
+        playerListener = PlayerListener { playbackManager.playNextTrack() }
+        playbackManager = PlaybackManager(playerService, playerListener)
         playlistHandler = PlaylistHandler(playlistService, musicDirectory)
         userInputHandler = UserInputHandler(playlistHandler, playbackManager)
 

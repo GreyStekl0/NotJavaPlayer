@@ -1,10 +1,12 @@
 package ui
 
 import model.Track
+import service.PlayerListener
 import service.PlayerService
 
 class PlaybackManager(
     private val playerService: PlayerService,
+    private val playerListener: PlayerListener,
 ) {
     private var currentPlaylist: List<Track> = emptyList()
     private var trackIndex = -1
@@ -20,7 +22,7 @@ class PlaybackManager(
     fun playCurrentTrack() {
         if (trackIndex in currentPlaylist.indices) {
             val track = currentPlaylist[trackIndex]
-            playerService.playTrack(track)
+            playerService.playTrack(track, playerListener)
         }
     }
 
