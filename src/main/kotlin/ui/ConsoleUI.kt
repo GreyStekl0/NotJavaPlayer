@@ -17,6 +17,22 @@ class ConsoleUI(
     private lateinit var userInputHandler: UserInputHandler
     private lateinit var playerListener: PlayerListener
 
+    companion object {
+        const val EXIT = 0
+        const val SHOW_ALL_SONGS = 1
+        const val CREATE_PLAYLIST = 2
+        const val REMOVE_PLAYLIST = 3
+        const val SHOW_ALL_PLAYLISTS = 4
+        const val SHOW_PLAYLIST = 5
+        const val PLAY_PLAYLIST = 6
+        const val ADD_SONG_TO_PLAYLIST = 7
+        const val REMOVE_SONG_FROM_PLAYLIST = 8
+        const val PLAY_PREVIOUS_TRACK = 9
+        const val PLAY_NEXT_TRACK = 10
+        const val REPLAY_CURRENT_TRACK = 11
+        const val PAUSE_RESUME_TRACK = 12
+    }
+
     fun start() {
         musicDirectory = requestMusicDirectory()
         fileService.createPlayerFolder(musicDirectory)
@@ -63,7 +79,7 @@ class ConsoleUI(
 
         if (choice == null) {
             println("Пожалуйста, введите число")
-        } else if (choice == 0) {
+        } else if (choice == EXIT) {
             return false
         } else {
             executeCommand(choice)
@@ -74,36 +90,36 @@ class ConsoleUI(
 
     private fun executeCommand(choice: Int) {
         when (choice) {
-            1 -> playlistHandler.showAllSongs()
-            2 -> userInputHandler.createPlaylistPrompt()
-            3 -> userInputHandler.removePlaylistPrompt()
-            4 -> playlistHandler.showAllPlaylists()
-            5 -> userInputHandler.showPlaylistPrompt()
-            6 -> userInputHandler.playPlaylistPrompt()
-            7 -> userInputHandler.addSongToPlaylistPrompt()
-            8 -> userInputHandler.removeSongFromPlaylistPrompt()
-            9 -> playbackManager.playPreviousTrack()
-            10 -> playbackManager.playNextTrack()
-            11 -> playbackManager.replayCurrentTrack()
-            12 -> playerService.pauseAndResumeTrack()
+            SHOW_ALL_SONGS -> playlistHandler.showAllSongs()
+            CREATE_PLAYLIST -> userInputHandler.createPlaylistPrompt()
+            REMOVE_PLAYLIST -> userInputHandler.removePlaylistPrompt()
+            SHOW_ALL_PLAYLISTS -> playlistHandler.showAllPlaylists()
+            SHOW_PLAYLIST -> userInputHandler.showPlaylistPrompt()
+            PLAY_PLAYLIST -> userInputHandler.playPlaylistPrompt()
+            ADD_SONG_TO_PLAYLIST -> userInputHandler.addSongToPlaylistPrompt()
+            REMOVE_SONG_FROM_PLAYLIST -> userInputHandler.removeSongFromPlaylistPrompt()
+            PLAY_PREVIOUS_TRACK -> playbackManager.playPreviousTrack()
+            PLAY_NEXT_TRACK -> playbackManager.playNextTrack()
+            REPLAY_CURRENT_TRACK -> playbackManager.replayCurrentTrack()
+            PAUSE_RESUME_TRACK -> playerService.pauseAndResumeTrack()
             else -> println("Неверный выбор\n")
         }
     }
 
     private fun displayMenu() {
         println("\nВыберите действие:")
-        println("1) Показать список песен")
-        println("2) Создать плейлист")
-        println("3) Удалить плейлист")
-        println("4) Показать все плейлисты")
-        println("5) Вывести плейлист")
-        println("6) Включить плейлист")
-        println("7) Добавить песню в плейлист")
-        println("8) Убрать песню из плейлиста")
-        println("9) Включить предыдущую песню")
-        println("10) Включить следующую песню")
-        println("11) Повторить текущую песню")
-        println("12) Поставить на паузу/возобновить воспроизведение")
-        println("0) Выйти\n")
+        println("$SHOW_ALL_SONGS) Показать список песен")
+        println("$CREATE_PLAYLIST) Создать плейлист")
+        println("$REMOVE_PLAYLIST) Удалить плейлист")
+        println("$SHOW_ALL_PLAYLISTS) Показать все плейлисты")
+        println("$SHOW_PLAYLIST) Вывести плейлист")
+        println("$PLAY_PLAYLIST) Включить плейлист")
+        println("$ADD_SONG_TO_PLAYLIST) Добавить песню в плейлист")
+        println("$REMOVE_SONG_FROM_PLAYLIST) Убрать песню из плейлиста")
+        println("$PLAY_PREVIOUS_TRACK) Включить предыдущую песню")
+        println("$PLAY_NEXT_TRACK) Включить следующую песню")
+        println("$REPLAY_CURRENT_TRACK) Повторить текущую песню")
+        println("$PAUSE_RESUME_TRACK) Поставить на паузу/возобновить воспроизведение")
+        println("$EXIT) Выйти\n")
     }
 }
