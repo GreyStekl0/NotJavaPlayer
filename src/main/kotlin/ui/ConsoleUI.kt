@@ -5,8 +5,8 @@ import service.IPlayerService
 import service.IPlaylistService
 
 class ConsoleUI(
-    private val directoryService: IDirectoryService,
-    private val playlistService: IPlaylistService,
+    directoryService: IDirectoryService,
+    playlistService: IPlaylistService,
     private val playerService: IPlayerService,
 ) {
     private val inputReader = InputReader()
