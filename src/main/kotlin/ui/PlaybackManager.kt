@@ -7,33 +7,33 @@ class PlaybackManager(
     private val playerService: PlayerService,
 ) {
     private var currentPlaylist: List<Track> = emptyList()
-    private var currentTrackIndex = -1
+    private var trackIndex = -1
 
     fun playPlaylist(playlist: List<Track>) {
         if (playlist.isNotEmpty()) {
             currentPlaylist = playlist
-            currentTrackIndex = 0
+            trackIndex = 0
             playCurrentTrack()
         }
     }
 
     fun playCurrentTrack() {
-        if (currentTrackIndex >= 0 && currentTrackIndex < currentPlaylist.size) {
-            val track = currentPlaylist[currentTrackIndex]
+        if (trackIndex in currentPlaylist.indices) {
+            val track = currentPlaylist[trackIndex]
             playerService.playTrack(track)
         }
     }
 
     fun playPreviousTrack() {
         if (currentPlaylist.isNotEmpty()) {
-            currentTrackIndex = (currentTrackIndex - 1 + currentPlaylist.size) % currentPlaylist.size
+            trackIndex = (trackIndex - 1 + currentPlaylist.size) % currentPlaylist.size
             playCurrentTrack()
         }
     }
 
     fun playNextTrack() {
         if (currentPlaylist.isNotEmpty()) {
-            currentTrackIndex = (currentTrackIndex + 1) % currentPlaylist.size
+            trackIndex = (trackIndex + 1) % currentPlaylist.size
             playCurrentTrack()
         }
     }
