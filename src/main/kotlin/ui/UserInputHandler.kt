@@ -4,13 +4,14 @@ import model.Playlist
 import model.Track
 
 class UserInputHandler(
-    private val playlistHandler: PlaylistHandler,
+    private val playlistManager: PlaylistManager,
+    private val playlistDisplay: PlaylistDisplay,
     private val playbackManager: PlaybackManager,
 ) {
     private fun promptForPlaylist(): Pair<String, Playlist>? {
         println("Введите название плейлиста:")
         val playlistName = readln()
-        val playlist = playlistHandler.getPlaylist(playlistName)
+        val playlist = playlistManager.getPlaylist(playlistName)
         return if (playlist != null) {
             Pair(playlistName, playlist)
         } else {
@@ -22,7 +23,7 @@ class UserInputHandler(
     private fun promptForTrack(playlist: Playlist): Track? {
         println("Введите номер песни или название песни:")
         val trackInput = readln()
-        val track = playlistHandler.getTrack(playlist, trackInput.toIntOrNull(), trackInput)
+        val track = playlistManager.getTrack(playlist, trackInput.toIntOrNull(), trackInput)
         if (track == null) {
             println("Песня не найдена")
         }
@@ -32,20 +33,20 @@ class UserInputHandler(
     fun createPlaylistPrompt() {
         println("Введите название плейлиста:")
         val name = readln()
-        playlistHandler.createPlaylist(name)
+        playlistManager.createPlaylist(name)
         println("Плейлист '$name' создан")
     }
 
     fun removePlaylistPrompt() {
         println("Введите название плейлиста:")
         val name = readln()
-        playlistHandler.removePlaylist(name)
+        playlistManager.removePlaylist(name)
         println("Плейлист '$name' удален")
     }
 
     fun showPlaylistPrompt() {
         val (name, _) = promptForPlaylist() ?: return
-        playlistHandler.showPlaylist(name)
+        playlistDisplay.showPlaylist(name)
     }
 
     fun playPlaylistPrompt() {
@@ -57,7 +58,7 @@ class UserInputHandler(
         val (playlistName, playlist) = promptForPlaylist() ?: return
         val track = promptForTrack(playlist) ?: return
 
-        playlistHandler.addTrackToPlaylist(playlistName, track)
+        playlistManager.addTrackToPlaylist(playlistName, track)
         println("Песня добавлена в плейлист '$playlistName'")
     }
 
@@ -65,7 +66,7 @@ class UserInputHandler(
         val (playlistName, playlist) = promptForPlaylist() ?: return
         val track = promptForTrack(playlist) ?: return
 
-        playlistHandler.removeTrackFromPlaylist(playlistName, track)
+        playlistManager.removeTrackFromPlaylist(playlistName, track)
         println("Песня удалена из плейлиста '$playlistName'")
     }
 }

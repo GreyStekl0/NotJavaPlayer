@@ -4,8 +4,8 @@ import kotlinx.serialization.json.Json
 import model.Playlist
 import java.io.File
 
-class FileService {
-    fun createPlayerFolder(directory: File): File {
+class FileService : IFileService {
+    override fun createPlayerFolder(directory: File): File {
         val jsonFolder = File(directory, ".NotJavaPlayer")
         if (!jsonFolder.exists()) {
             jsonFolder.mkdir()
@@ -13,7 +13,7 @@ class FileService {
         return jsonFolder
     }
 
-    fun findAllMp3Files(directory: File): List<File> {
+    override fun findAllMp3Files(directory: File): List<File> {
         val result = mutableListOf<File>()
         val files = directory.listFiles() ?: return result
 
@@ -29,12 +29,12 @@ class FileService {
         return result
     }
 
-    fun getDefaultDirectory(): File {
+    override fun getDefaultDirectory(): File {
         val home = System.getProperty("user.home")
         return File(home)
     }
 
-    fun savePlaylistToJson(
+    override fun savePlaylistToJson(
         directory: File,
         playlist: Playlist,
     ) {
@@ -44,7 +44,7 @@ class FileService {
         jsonFile.writeText(result)
     }
 
-    fun loadPlaylistFromJson(file: File): Playlist {
+    override fun loadPlaylistFromJson(file: File): Playlist {
         val data = file.readText()
         return Json.decodeFromString(Playlist.serializer(), data)
     }

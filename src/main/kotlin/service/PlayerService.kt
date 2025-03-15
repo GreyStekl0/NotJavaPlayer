@@ -6,13 +6,17 @@ import model.Track
 import org.slf4j.LoggerFactory
 import java.io.File
 
-class PlayerService {
+class PlayerService : IPlayerService {
     private val logger = LoggerFactory.getLogger(PlayerService::class.java)
     private var basicPlayer: BasicPlayer? = null
     private var isPlaying = false
     private var isPaused = false
 
-    fun playTrack(
+    override fun isPlaying(): Boolean = isPlaying
+
+    override fun isPaused(): Boolean = isPaused
+
+    override fun playTrack(
         track: Track,
         listener: PlayerListener,
     ) {
@@ -30,7 +34,7 @@ class PlayerService {
         }
     }
 
-    fun stopCurrentTrack() {
+    override fun stopCurrentTrack() {
         try {
             basicPlayer?.stop()
         } catch (ex: BasicPlayerException) {
@@ -40,7 +44,7 @@ class PlayerService {
         isPaused = false
     }
 
-    fun pauseAndResumeTrack() {
+    override fun pauseAndResumeTrack() {
         if (!isPlaying) return
 
         if (isPaused) {

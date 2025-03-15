@@ -7,17 +7,17 @@ import java.io.File
 
 class PlaylistService(
     private val repository: PlaylistRepository,
-) {
-    fun getAllSongs(directory: File): Playlist = repository.getAllSongs(directory)
+) : IPlaylistService {
+    override fun getAllSongs(directory: File): Playlist = repository.getAllSongs(directory)
 
-    fun savePlaylist(
+    override fun savePlaylist(
         directory: File,
         playlist: Playlist,
     ) {
         repository.savePlaylist(directory, playlist)
     }
 
-    fun createPlaylist(
+    override fun createPlaylist(
         directory: File,
         name: String,
     ) {
@@ -25,21 +25,21 @@ class PlaylistService(
         repository.savePlaylist(directory, playlist)
     }
 
-    fun removePlaylist(
+    override fun removePlaylist(
         directory: File,
         name: String,
     ) {
         repository.deletePlaylist(directory, name)
     }
 
-    fun getAllPlaylists(directory: File): List<String> = repository.getAllPlaylists(directory)
+    override fun getAllPlaylists(directory: File): List<String> = repository.getAllPlaylists(directory)
 
-    fun getPlaylist(
+    override fun getPlaylist(
         directory: File,
         name: String,
     ): Playlist? = repository.getPlaylist(directory, name)
 
-    fun addTrackToPlaylist(
+    override fun addTrackToPlaylist(
         directory: File,
         playlistName: String,
         track: Track,
@@ -50,7 +50,7 @@ class PlaylistService(
         return true
     }
 
-    fun removeTrackFromPlaylist(
+    override fun removeTrackFromPlaylist(
         directory: File,
         playlistName: String,
         track: Track,

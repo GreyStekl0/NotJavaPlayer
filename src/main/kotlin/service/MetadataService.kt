@@ -5,8 +5,8 @@ import org.jaudiotagger.audio.AudioFileIO
 import org.jaudiotagger.tag.FieldKey
 import java.io.File
 
-class MetadataService {
-    fun getMetadata(song: File): List<String> {
+class MetadataService : IMetadataService {
+    override fun getMetadata(song: File): List<String> {
         val audioFile = AudioFileIO.read(song)
         val tag = audioFile.tag
         val title = tag.getFirst(FieldKey.TITLE)
@@ -14,7 +14,7 @@ class MetadataService {
         return listOf(title, artist)
     }
 
-    fun createTrack(file: File): Track {
+    override fun createTrack(file: File): Track {
         val mp3Data = getMetadata(file)
         return Track(file.path, mp3Data[0], mp3Data[1])
     }

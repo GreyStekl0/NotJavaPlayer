@@ -8,8 +8,8 @@ import java.io.File
 class PlaylistRepository(
     private val fileService: FileService,
     private val metadataService: MetadataService,
-) {
-    fun getAllSongs(directory: File): Playlist {
+) : IPlaylistRepository {
+    override fun getAllSongs(directory: File): Playlist {
         val allSongs = Playlist("All songs")
         val mp3Files = fileService.findAllMp3Files(directory)
         for (file in mp3Files) {
@@ -19,7 +19,7 @@ class PlaylistRepository(
         return allSongs
     }
 
-    fun getAllPlaylists(directory: File): List<String> {
+    override fun getAllPlaylists(directory: File): List<String> {
         val playerDir = fileService.createPlayerFolder(directory)
         return playerDir
             .listFiles()
@@ -28,7 +28,7 @@ class PlaylistRepository(
             ?: emptyList()
     }
 
-    fun getPlaylist(
+    override fun getPlaylist(
         directory: File,
         name: String,
     ): Playlist? {
@@ -41,14 +41,14 @@ class PlaylistRepository(
         }
     }
 
-    fun savePlaylist(
+    override fun savePlaylist(
         directory: File,
         playlist: Playlist,
     ) {
         fileService.savePlaylistToJson(directory, playlist)
     }
 
-    fun deletePlaylist(
+    override fun deletePlaylist(
         directory: File,
         name: String,
     ) {
