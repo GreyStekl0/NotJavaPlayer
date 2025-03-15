@@ -2,58 +2,56 @@ package service
 
 import javazoom.jlgui.basicplayer.BasicPlayer
 import javazoom.jlgui.basicplayer.BasicPlayerException
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import model.Track
+import org.slf4j.LoggerFactory
 import java.io.File
 
 class PlayerService {
+    private val logger = LoggerFactory.getLogger(PlayerService::class.java)
     private var basicPlayer: BasicPlayer? = null
     private var isPlaying = false
     private var isPaused = false
 
-    // Запускает воспроизведение трека
-    suspend fun playTrack(track: Track) =
-        withContext(Dispatchers.IO) {
-            stopCurrentTrack() // остановка предыдущего трека, если он играет
+    fun playTrack(track: Track) {
+        stopCurrentTrack()
 
-            basicPlayer = BasicPlayer() // создаем новый плеер
-            try {
-                basicPlayer?.open(File(track.path))
-                basicPlayer?.play() // запуск воспроизведения
-                isPlaying = true
-                isPaused = false
-            } catch (ex: BasicPlayerException) {
-                ex.printStackTrace()
-            }
+        basicPlayer = BasicPlayer()
+        try {
+            basicPlayer?.open(File(track.path))
+            basicPlayer?.play()
+            isPlaying = true
+            isPaused = false
+        } catch (ex: BasicPlayerException) {
+            logger.error("Ошибка при воспроизведении трека: ${track.title}", ex)
         }
+    }
 
-    // Останавливает воспроизведение (если необходимо)
     fun stopCurrentTrack() {
         try {
             basicPlayer?.stop()
         } catch (ex: BasicPlayerException) {
-            ex.printStackTrace()
+            logger.error("Ошибка при остановке воспроизведения", ex)
         }
         isPlaying = false
         isPaused = false
     }
 
-    // Приостанавливает воспроизведение
     fun pauseAndResumeTrack() {
-        if (isPlaying && !isPaused) {
-            try {
-                basicPlayer?.pause()
-                isPaused = true
-            } catch (ex: BasicPlayerException) {
-                ex.printStackTrace()
-            }
-        } else if (isPlaying && isPaused) {
+        if (!isPlaying) return
+
+        if (isPaused) {
             try {
                 basicPlayer?.resume()
                 isPaused = false
             } catch (ex: BasicPlayerException) {
-                ex.printStackTrace()
+                logger.error("Ошибка при возобновлении воспроизведения", ex)
+            }
+        } else {
+            try {
+                basicPlayer?.pause()
+                isPaused = true
+            } catch (ex: BasicPlayerException) {
+                logger.error("Ошибка при приостановке воспроизведения", ex)
             }
         }
     }
