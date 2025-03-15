@@ -1,11 +1,11 @@
 package ui
 
 import model.Playlist
-import service.PlaylistService
+import service.IPlaylistService
 import java.io.File
 
 class PlaylistDisplay(
-    private val playlistService: PlaylistService,
+    private val playlistService: IPlaylistService,
     private val musicDirectory: File,
 ) {
     fun showAllSongs() {

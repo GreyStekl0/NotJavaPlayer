@@ -2,11 +2,11 @@ package ui
 
 import model.Playlist
 import model.Track
-import service.PlaylistService
+import service.IPlaylistService
 import java.io.File
 
 class PlaylistManager(
-    private val playlistService: PlaylistService,
+    private val playlistService: IPlaylistService,
     private val musicDirectory: File,
 ) {
     fun createPlaylist(name: String) {

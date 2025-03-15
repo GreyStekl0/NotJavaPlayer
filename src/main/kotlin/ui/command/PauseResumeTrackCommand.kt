@@ -1,9 +1,9 @@
 package ui.command
 
-import service.PlayerService
+import service.IPlayerService
 
 class PauseResumeTrackCommand(
-    private val playerService: PlayerService,
+    private val playerService: IPlayerService,
 ) : Command {
     override fun execute() {
         playerService.pauseAndResumeTrack()

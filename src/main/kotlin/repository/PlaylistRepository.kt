@@ -1,17 +1,19 @@
 package repository
 
 import model.Playlist
-import service.FileService
-import service.MetadataService
+import service.IDirectoryService
+import service.IJsonService
+import service.IMetadataService
 import java.io.File
 
 class PlaylistRepository(
-    private val fileService: FileService,
-    private val metadataService: MetadataService,
+    private val directoryService: IDirectoryService,
+    private val jsonService: IJsonService,
+    private val metadataService: IMetadataService,
 ) : IPlaylistRepository {
     override fun getAllSongs(directory: File): Playlist {
         val allSongs = Playlist("All songs")
-        val mp3Files = fileService.findAllMp3Files(directory)
+        val mp3Files = directoryService.findAllMp3Files(directory)
         for (file in mp3Files) {
             val track = metadataService.createTrack(file)
             allSongs.tracks.add(track)
@@ -20,7 +22,7 @@ class PlaylistRepository(
     }
 
     override fun getAllPlaylists(directory: File): List<String> {
-        val playerDir = fileService.createPlayerFolder(directory)
+        val playerDir = directoryService.createPlayerFolder(directory)
         return playerDir
             .listFiles()
             ?.filter { it.isFile && it.extension == "json" }
@@ -32,10 +34,10 @@ class PlaylistRepository(
         directory: File,
         name: String,
     ): Playlist? {
-        val playerDir = fileService.createPlayerFolder(directory)
+        val playerDir = directoryService.createPlayerFolder(directory)
         val playlistFile = File(playerDir, "$name.json")
         return if (playlistFile.exists()) {
-            fileService.loadPlaylistFromJson(playlistFile)
+            jsonService.loadPlaylistFromJson(playlistFile)
         } else {
             null
         }
@@ -45,14 +47,14 @@ class PlaylistRepository(
         directory: File,
         playlist: Playlist,
     ) {
-        fileService.savePlaylistToJson(directory, playlist)
+        jsonService.savePlaylistToJson(directory, playlist)
     }
 
     override fun deletePlaylist(
         directory: File,
         name: String,
     ) {
-        val playerDir = fileService.createPlayerFolder(directory)
+        val playerDir = directoryService.createPlayerFolder(directory)
         val playlistFile = File(playerDir, "$name.json")
         if (playlistFile.exists()) {
             playlistFile.delete()

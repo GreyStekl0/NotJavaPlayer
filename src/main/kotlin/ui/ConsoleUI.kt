@@ -1,9 +1,9 @@
 package ui
 
-import service.FileService
+import service.IDirectoryService
+import service.IPlayerService
+import service.IPlaylistService
 import service.PlayerListener
-import service.PlayerService
-import service.PlaylistService
 import ui.command.AddSongToPlaylistCommand
 import ui.command.Command
 import ui.command.CreatePlaylistCommand
@@ -20,9 +20,9 @@ import ui.command.ShowPlaylistCommand
 import java.io.File
 
 class ConsoleUI(
-    private val fileService: FileService,
-    private val playlistService: PlaylistService,
-    private val playerService: PlayerService,
+    private val directoryService: IDirectoryService,
+    private val playlistService: IPlaylistService,
+    private val playerService: IPlayerService,
 ) {
     private lateinit var commands: Map<MenuOption, Command>
     private lateinit var musicDirectory: File
@@ -41,7 +41,7 @@ class ConsoleUI(
 
     private fun initializeComponents() {
         musicDirectory = requestMusicDirectory()
-        fileService.createPlayerFolder(musicDirectory)
+        directoryService.createPlayerFolder(musicDirectory)
 
         playerListener = PlayerListener { playbackManager.playNextTrack() }
         playbackManager = PlaybackManager(playerService, playerListener)
@@ -81,7 +81,7 @@ class ConsoleUI(
         )
         val directoryInput = readln()
         return if (directoryInput.replace(" ", "") == "") {
-            fileService.getDefaultDirectory()
+            directoryService.getDefaultDirectory()
         } else {
             File(directoryInput)
         }

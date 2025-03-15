@@ -1,11 +1,11 @@
 package ui
 
 import model.Track
+import service.IPlayerService
 import service.PlayerListener
-import service.PlayerService
 
 class PlaybackManager(
-    private val playerService: PlayerService,
+    private val playerService: IPlayerService,
     private val playerListener: PlayerListener,
 ) {
     private var currentPlaylist: List<Track> = emptyList()
