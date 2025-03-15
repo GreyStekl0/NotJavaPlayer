@@ -1,16 +1,37 @@
 plugins {
     kotlin("jvm") version "2.1.10"
     kotlin("plugin.serialization") version "2.1.10"
+    application
+    id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
 group = "org.example"
-version = "1.0-SNAPSHOT"
+version = "1.0"
 
 repositories {
     mavenCentral()
     maven {
         url = uri("https://www.beatunes.com/repo/maven2")
     }
+}
+
+application {
+    mainClass.set("MainKt")
+}
+
+tasks.named<JavaExec>("run") {
+    standardInput = System.`in`
+}
+
+tasks.jar {
+    manifest {
+        attributes["Main-Class"] = "MainKt"
+    }
+}
+
+tasks.shadowJar {
+    archiveBaseName.set("NotJavaPlayer")
+    archiveVersion.set("1.0")
 }
 
 dependencies {
@@ -26,5 +47,5 @@ tasks.test {
     useJUnitPlatform()
 }
 kotlin {
-    jvmToolchain(23)
+    jvmToolchain(21)
 }

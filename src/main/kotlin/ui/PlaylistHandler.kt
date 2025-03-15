@@ -30,7 +30,7 @@ class PlaylistHandler(
     fun showPlaylist(name: String): Playlist? {
         val playlist = playlistService.getPlaylist(musicDirectory, name)
         playlist?.tracks?.forEachIndexed { index, track ->
-            println("$index: ${track.artist} - ${track.title}")
+            println("${index + 1}: ${track.artist} - ${track.title}")
         }
         return playlist
     }

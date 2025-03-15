@@ -27,6 +27,7 @@ class ConsoleUI(
         playlistService.savePlaylist(musicDirectory, allSongs)
 
         mainLoop()
+        playerService.stopCurrentTrack()
     }
 
     private fun requestMusicDirectory(): File {
