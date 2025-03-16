@@ -20,7 +20,7 @@ class PlaylistManager(
         index: Int?,
         title: String,
     ): Track? =
-        if (index != null && index in playlist.tracks.indices) {
+        if (index != null && index > 0 && index <= playlist.tracks.size) {
             playlist.tracks[index - 1]
         } else {
             playlist.tracks.find { it.title == title }
