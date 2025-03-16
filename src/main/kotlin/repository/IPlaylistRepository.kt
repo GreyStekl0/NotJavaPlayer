@@ -21,5 +21,5 @@ interface IPlaylistRepository {
     fun deletePlaylist(
         directory: File,
         name: String,
-    )
+    ): Boolean
 }

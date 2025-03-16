@@ -20,7 +20,7 @@ interface IPlaylistService {
     fun removePlaylist(
         directory: File,
         name: String,
-    )
+    ): Boolean
 
     fun getAllPlaylists(directory: File): List<String>
 

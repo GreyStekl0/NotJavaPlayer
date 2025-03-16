@@ -13,16 +13,14 @@ class PlaylistManager(
         playlistService.createPlaylist(musicDirectory, name)
     }
 
-    fun removePlaylist(name: String) {
-        playlistService.removePlaylist(musicDirectory, name)
-    }
+    fun removePlaylist(name: String): Boolean = playlistService.removePlaylist(musicDirectory, name)
 
     fun getTrack(
         playlist: Playlist,
         index: Int?,
         title: String,
     ): Track? =
-        if (index != null && index > 0 && index < playlist.tracks.size) {
+        if (index != null && index in playlist.tracks.indices) {
             playlist.tracks[index - 1]
         } else {
             playlist.tracks.find { it.title == title }
@@ -31,16 +29,12 @@ class PlaylistManager(
     fun addTrackToPlaylist(
         playlistName: String,
         track: Track,
-    ) {
-        playlistService.addTrackToPlaylist(musicDirectory, playlistName, track)
-    }
+    ): Boolean = playlistService.addTrackToPlaylist(musicDirectory, playlistName, track)
 
     fun removeTrackFromPlaylist(
         playlistName: String,
         track: Track,
-    ) {
-        playlistService.removeTrackFromPlaylist(musicDirectory, playlistName, track)
-    }
+    ): Boolean = playlistService.removeTrackFromPlaylist(musicDirectory, playlistName, track)
 
     fun getPlaylist(name: String): Playlist? = playlistService.getPlaylist(musicDirectory, name)
 }

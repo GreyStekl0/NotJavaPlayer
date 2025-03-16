@@ -53,11 +53,14 @@ class PlaylistRepository(
     override fun deletePlaylist(
         directory: File,
         name: String,
-    ) {
+    ): Boolean {
         val playerDir = directoryService.createPlayerFolder(directory)
         val playlistFile = File(playerDir, "$name.json")
-        if (playlistFile.exists()) {
+        return if (playlistFile.exists()) {
             playlistFile.delete()
+            true
+        } else {
+            false
         }
     }
 }

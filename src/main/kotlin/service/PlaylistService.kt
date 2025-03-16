@@ -28,9 +28,7 @@ class PlaylistService(
     override fun removePlaylist(
         directory: File,
         name: String,
-    ) {
-        repository.deletePlaylist(directory, name)
-    }
+    ): Boolean = repository.deletePlaylist(directory, name)
 
     override fun getAllPlaylists(directory: File): List<String> = repository.getAllPlaylists(directory)
 
@@ -44,10 +42,14 @@ class PlaylistService(
         playlistName: String,
         track: Track,
     ): Boolean {
-        val playlist = getPlaylist(directory, playlistName) ?: return false
-        playlist.tracks.add(track)
-        repository.savePlaylist(directory, playlist)
-        return true
+        val playlist = getPlaylist(directory, playlistName)
+        if (playlist == null || track in playlist.tracks) {
+            return false
+        } else {
+            playlist.tracks.add(track)
+            repository.savePlaylist(directory, playlist)
+            return true
+        }
     }
 
     override fun removeTrackFromPlaylist(

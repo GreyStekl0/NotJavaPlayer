@@ -16,11 +16,20 @@ class InputReader {
             Или нажмите Enter для использования папки по умолчанию:
             """.trimIndent(),
         )
-        val directoryInput = readLine()
-        return if (directoryInput.replace(" ", "") == "") {
-            directoryService.getDefaultDirectory()
-        } else {
-            File(directoryInput)
+
+        while (true) {
+            val directoryInput = readLine()
+
+            if (directoryInput.replace(" ", "") == "") {
+                return directoryService.getDefaultDirectory()
+            }
+
+            val directory = File(directoryInput)
+            if (directory.exists()) {
+                return directory
+            } else {
+                println("Папка не найдена, попробуй еще раз")
+            }
         }
     }
 }

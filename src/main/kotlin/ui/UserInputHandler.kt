@@ -9,7 +9,8 @@ class UserInputHandler(
     private val playbackManager: PlaybackManager,
 ) {
     private fun promptForPlaylist(): Pair<String, Playlist>? {
-        println("Введите название плейлиста:")
+        println("Выберите название плейлист:")
+        playlistDisplay.showAllPlaylists()
         val playlistName = readln()
         val playlist = playlistManager.getPlaylist(playlistName)
         return if (playlist != null) {
@@ -22,6 +23,7 @@ class UserInputHandler(
 
     private fun promptForTrack(playlist: Playlist): Track? {
         println("Введите номер песни или название песни:")
+        playlistDisplay.showAllSongs()
         val trackInput = readln()
         val track = playlistManager.getTrack(playlist, trackInput.toIntOrNull(), trackInput)
         if (track == null) {
@@ -33,15 +35,24 @@ class UserInputHandler(
     fun createPlaylistPrompt() {
         println("Введите название плейлиста:")
         val name = readln()
-        playlistManager.createPlaylist(name)
-        println("Плейлист '$name' создан")
+        if (playlistManager.getPlaylist(name) != null) {
+            println("Плейлист '$name' уже существует")
+        } else {
+            playlistManager.createPlaylist(name)
+            println("Плейлист '$name' создан")
+        }
     }
 
     fun removePlaylistPrompt() {
         println("Введите название плейлиста:")
         val name = readln()
-        playlistManager.removePlaylist(name)
-        println("Плейлист '$name' удален")
+        if (name == "All songs") {
+            println("Нельзя удалить плейлист 'All songs'")
+        } else if (playlistManager.removePlaylist(name)) {
+            println("Плейлист '$name' удален")
+        } else {
+            println("Плейлист '$name' не найден")
+        }
     }
 
     fun showPlaylistPrompt() {
@@ -51,22 +62,45 @@ class UserInputHandler(
 
     fun playPlaylistPrompt() {
         val (_, playlist) = promptForPlaylist() ?: return
-        playbackManager.playPlaylist(playlist.tracks)
+        if (playlist.tracks.isEmpty()) {
+            println("Плейлист пуст")
+        } else {
+            playbackManager.playPlaylist(playlist.tracks)
+        }
     }
 
     fun addSongToPlaylistPrompt() {
-        val (playlistName, playlist) = promptForPlaylist() ?: return
-        val track = promptForTrack(playlist) ?: return
+        val playlistResult = promptForPlaylist()
+        val allSongsPlaylist = playlistManager.getPlaylist("All songs")
 
-        playlistManager.addTrackToPlaylist(playlistName, track)
-        println("Песня добавлена в плейлист '$playlistName'")
+        if (playlistResult != null && allSongsPlaylist != null) {
+            val (playlistName, _) = playlistResult
+            val track = promptForTrack(allSongsPlaylist)
+
+            if (track != null) {
+                val success = playlistManager.addTrackToPlaylist(playlistName, track)
+                println(
+                    if (success) {
+                        "Песня добавлена в плейлист '$playlistName'"
+                    } else {
+                        "Песня уже есть в плейлисте '$playlistName'"
+                    },
+                )
+            }
+        }
     }
 
     fun removeSongFromPlaylistPrompt() {
         val (playlistName, playlist) = promptForPlaylist() ?: return
         val track = promptForTrack(playlist) ?: return
 
-        playlistManager.removeTrackFromPlaylist(playlistName, track)
-        println("Песня удалена из плейлиста '$playlistName'")
+        val success = playlistManager.removeTrackFromPlaylist(playlistName, track)
+        println(
+            if (success) {
+                "Песня удалена из плейлиста '$playlistName'"
+            } else {
+                "Песня не найдена в плейлисте '$playlistName'"
+            },
+        )
     }
 }

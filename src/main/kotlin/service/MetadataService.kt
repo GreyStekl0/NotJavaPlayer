@@ -9,8 +9,18 @@ class MetadataService : IMetadataService {
     override fun getMetadata(song: File): List<String> {
         val audioFile = AudioFileIO.read(song)
         val tag = audioFile.tag
-        val title = tag.getFirst(FieldKey.TITLE)
-        val artist = tag.getFirst(FieldKey.ARTIST)
+        val title =
+            if (tag.getFirst(FieldKey.TITLE).isEmpty()) {
+                song.nameWithoutExtension
+            } else {
+                tag.getFirst(FieldKey.TITLE)
+            }
+        val artist =
+            if (tag.getFirst(FieldKey.ARTIST).isEmpty()) {
+                "Unknown"
+            } else {
+                tag.getFirst(FieldKey.ARTIST)
+            }
         return listOf(title, artist)
     }
 

@@ -2,6 +2,7 @@ package service
 
 import javazoom.jlgui.basicplayer.BasicPlayer
 import javazoom.jlgui.basicplayer.BasicPlayerException
+import javazoom.jlgui.basicplayer.BasicPlayerListener
 import model.Track
 import org.slf4j.LoggerFactory
 import java.io.File
@@ -18,7 +19,7 @@ class PlayerService : IPlayerService {
 
     override fun playTrack(
         track: Track,
-        listener: PlayerListener,
+        listener: BasicPlayerListener,
     ) {
         stopCurrentTrack()
 

@@ -10,7 +10,14 @@ class PlaylistDisplay(
 ) {
     fun showAllSongs() {
         val allSongs = playlistService.getPlaylist(musicDirectory, "All songs")
-        allSongs?.tracks?.forEach { println("${it.artist} - ${it.title}") }
+        if (allSongs?.tracks?.isEmpty() == true) {
+            println("Песен нет")
+            return
+        } else {
+            allSongs?.tracks?.forEachIndexed { index, track ->
+                println("${index + 1}) ${track.artist} - ${track.title}")
+            }
+        }
     }
 
     fun showAllPlaylists() {
@@ -20,9 +27,18 @@ class PlaylistDisplay(
 
     fun showPlaylist(name: String): Playlist? {
         val playlist = playlistService.getPlaylist(musicDirectory, name)
-        playlist?.tracks?.forEachIndexed { index, track ->
-            println("${index + 1}: ${track.artist} - ${track.title}")
+        if (playlist != null) {
+            if (playlist.tracks.isEmpty()) {
+                println("В плейлисте нет песен")
+            } else {
+                playlist.tracks.forEachIndexed { index, track ->
+                    println("${index + 1}) ${track.artist} - ${track.title}")
+                }
+            }
+            return playlist
+        } else {
+            println("Плейлист '$name' не найден")
+            return null
         }
-        return playlist
     }
 }
