@@ -71,11 +71,13 @@ class PlaylistRepositoryTest {
         file1.createNewFile()
         val file2 = File(directory, "file2.json")
         file2.createNewFile()
+        val file3 = File(directory, "file3.json")
+        file3.createNewFile()
 
         every { directoryService.createPlayerFolder(directory) } returns directory
 
         val result = playlistRepository.getAllPlaylists(directory)
-        assertEquals(listOf("file2", "file1"), result)
+        assertEquals(listOf("file3", "file2", "file1"), result)
     }
 
     @Test
