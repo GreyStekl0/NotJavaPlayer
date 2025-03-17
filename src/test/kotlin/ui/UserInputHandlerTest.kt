@@ -261,7 +261,7 @@ class UserInputHandlerTest {
         every { playlistManager.getPlaylist("targetPlaylist") } returns targetPlaylist
         every { playlistManager.getPlaylist("All songs") } returns allSongsPlaylist
         every { playlistDisplay.showAllSongs() } returns Unit
-        every { playlistManager.getTrack(allSongsPlaylist, null, "nonExistentTrack") } returns null
+        every { playlistManager.getTrack(allSongsPlaylist, inputs[1].toIntOrNull(), inputs[1]) } returns null
 
         userInputHandler.addSongToPlaylistPrompt()
 
@@ -289,7 +289,7 @@ class UserInputHandlerTest {
         every { playlistManager.getPlaylist("targetPlaylist") } returns targetPlaylist
         every { playlistManager.getPlaylist("All songs") } returns allSongsPlaylist
         every { playlistDisplay.showAllSongs() } returns Unit
-        every { playlistManager.getTrack(allSongsPlaylist, null, "trackName") } returns track
+        every { playlistManager.getTrack(allSongsPlaylist, inputs[1].toIntOrNull(), inputs[1]) } returns track
         every { playlistManager.addTrackToPlaylist("targetPlaylist", track) } returns true
 
         userInputHandler.addSongToPlaylistPrompt()
@@ -318,7 +318,7 @@ class UserInputHandlerTest {
         every { playlistManager.getPlaylist("targetPlaylist") } returns targetPlaylist
         every { playlistManager.getPlaylist("All songs") } returns allSongsPlaylist
         every { playlistDisplay.showAllSongs() } returns Unit
-        every { playlistManager.getTrack(allSongsPlaylist, null, "trackName") } returns track
+        every { playlistManager.getTrack(allSongsPlaylist, inputs[1].toIntOrNull(), inputs[1]) } returns track
         every { playlistManager.addTrackToPlaylist("targetPlaylist", track) } returns false
 
         userInputHandler.addSongToPlaylistPrompt()
@@ -374,7 +374,7 @@ class UserInputHandlerTest {
 
     @Test
     fun `removeSongFromPlaylistPrompt remove song from playlist`() {
-        val inputs = mutableListOf("playlistName", "trackName")
+        val inputs = mutableListOf("playlistName", "1")
         val outputs = mutableListOf<String>()
         val playlist = Playlist("playlistName", mutableListOf(Track("path", "trackName", "Artist")))
 
@@ -390,7 +390,7 @@ class UserInputHandlerTest {
         every { playlistDisplay.showAllPlaylists() } returns Unit
         every { playlistManager.getPlaylist("playlistName") } returns playlist
         every { playlistDisplay.showPlaylist("playlistName") } returns Unit
-        every { playlistManager.getTrack(playlist, null, "trackName") } returns playlist.tracks[0]
+        every { playlistManager.getTrack(playlist, inputs[1].toIntOrNull(), inputs[1]) } returns playlist.tracks[0]
         every { playlistManager.removeTrackFromPlaylist("playlistName", playlist.tracks[0]) } returns true
 
         userInputHandler.removeSongFromPlaylistPrompt()
