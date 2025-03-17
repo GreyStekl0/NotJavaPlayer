@@ -7,27 +7,29 @@ class UserInputHandler(
     private val playlistManager: PlaylistManager,
     private val playlistDisplay: PlaylistDisplay,
     private val playbackManager: PlaybackManager,
+    private val reader: () -> String = ::readln,
+    private val writer: (String) -> Unit = ::println,
 ) {
     private fun promptForPlaylist(): Pair<String, Playlist>? {
-        println("Выберите название плейлист:")
+        writer("Выберите название плейлист:")
         playlistDisplay.showAllPlaylists()
-        val playlistName = readln()
+        val playlistName = reader()
         val playlist = playlistManager.getPlaylist(playlistName)
         return if (playlist != null) {
             Pair(playlistName, playlist)
         } else {
-            println("Плейлист '$playlistName' не найден")
+            writer("Плейлист '$playlistName' не найден")
             null
         }
     }
 
     private fun promptForTrack(playlist: Playlist): Track? {
-        println("Введите номер песни или название песни:")
+        writer("Введите номер песни или название песни:")
         playlistDisplay.showAllSongs()
-        val trackInput = readln()
+        val trackInput = reader()
         val track = playlistManager.getTrack(playlist, trackInput.toIntOrNull(), trackInput)
         if (track == null) {
-            println("Песня не найдена")
+            writer("Песня не найдена")
         }
         return track
     }
@@ -36,36 +38,36 @@ class UserInputHandler(
         playlist: Playlist,
         playlistName: String,
     ): Track? {
-        println("Введите номер песни или название песни из плейлиста '$playlistName':")
+        writer("Введите номер песни или название песни из плейлиста '$playlistName':")
         playlistDisplay.showPlaylist(playlistName)
-        val trackInput = readln()
+        val trackInput = reader()
         val track = playlistManager.getTrack(playlist, trackInput.toIntOrNull(), trackInput)
         if (track == null) {
-            println("Песня не найдена")
+            writer("Песня не найдена")
         }
         return track
     }
 
     fun createPlaylistPrompt() {
-        println("Введите название плейлиста:")
-        val name = readln()
+        writer("Введите название плейлиста:")
+        val name = reader()
         if (playlistManager.getPlaylist(name) != null) {
-            println("Плейлист '$name' уже существует")
+            writer("Плейлист '$name' уже существует")
         } else {
             playlistManager.createPlaylist(name)
-            println("Плейлист '$name' создан")
+            writer("Плейлист '$name' создан")
         }
     }
 
     fun removePlaylistPrompt() {
-        println("Введите название плейлиста:")
-        val name = readln()
+        writer("Введите название плейлиста:")
+        val name = reader()
         if (name == "All songs") {
-            println("Нельзя удалить плейлист 'All songs'")
+            writer("Плейлист 'All songs' не может быть удален")
         } else if (playlistManager.removePlaylist(name)) {
-            println("Плейлист '$name' удален")
+            writer("Плейлист '$name' удален")
         } else {
-            println("Плейлист '$name' не найден")
+            writer("Плейлист '$name' не найден")
         }
     }
 
@@ -77,7 +79,7 @@ class UserInputHandler(
     fun playPlaylistPrompt() {
         val (_, playlist) = promptForPlaylist() ?: return
         if (playlist.tracks.isEmpty()) {
-            println("Плейлист пуст")
+            writer("Плейлист пуст")
         } else {
             playbackManager.playPlaylist(playlist.tracks)
         }
@@ -93,7 +95,7 @@ class UserInputHandler(
 
             if (track != null) {
                 val success = playlistManager.addTrackToPlaylist(playlistName, track)
-                println(
+                writer(
                     if (success) {
                         "Песня добавлена в плейлист '$playlistName'"
                     } else {
@@ -115,7 +117,7 @@ class UserInputHandler(
 
                 if (track != null) {
                     val success = playlistManager.removeTrackFromPlaylist(playlistName, track)
-                    println(
+                    writer(
                         if (success) {
                             "Песня удалена из плейлиста '$playlistName'"
                         } else {
@@ -124,7 +126,7 @@ class UserInputHandler(
                     )
                 }
             } else {
-                println("Плейлист пуст")
+                writer("Плейлист пуст")
             }
         }
     }
