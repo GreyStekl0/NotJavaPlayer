@@ -26,6 +26,11 @@ class PlayerService : IPlayerService {
         basicPlayer = BasicPlayer()
         basicPlayer?.addBasicPlayerListener(listener)
         try {
+            val file = File(track.path)
+            if (!file.exists()) {
+                println("Файл не найден, проверьте существует ли он по пути: ${track.path}")
+                return
+            }
             basicPlayer?.open(File(track.path))
             basicPlayer?.play()
             isPlaying = true

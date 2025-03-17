@@ -1,6 +1,5 @@
 package ui
 
-import model.Playlist
 import service.IPlaylistService
 import java.io.File
 
@@ -25,7 +24,7 @@ class PlaylistDisplay(
         playlists.forEach { println(it) }
     }
 
-    fun showPlaylist(name: String): Playlist? {
+    fun showPlaylist(name: String) {
         val playlist = playlistService.getPlaylist(musicDirectory, name)
         if (playlist != null) {
             if (playlist.tracks.isEmpty()) {
@@ -35,10 +34,8 @@ class PlaylistDisplay(
                     println("${index + 1}) ${track.artist} - ${track.title}")
                 }
             }
-            return playlist
         } else {
             println("Плейлист '$name' не найден")
-            return null
         }
     }
 }

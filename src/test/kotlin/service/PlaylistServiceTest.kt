@@ -9,7 +9,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import repository.IPlaylistRepository
-import repository.PlaylistRepository
 import java.io.File
 import kotlin.test.assertTrue
 
@@ -18,7 +17,7 @@ class PlaylistServiceTest {
 
     @BeforeEach
     fun setUp() {
-        repository = mockk<PlaylistRepository>()
+        repository = mockk<IPlaylistRepository>()
     }
 
     @Test
@@ -61,7 +60,7 @@ class PlaylistServiceTest {
         val playlist = Playlist(playlistName, mutableListOf())
 
         every { repository.getPlaylist(directory, playlistName) } returns playlist
-        every { repository.savePlaylist(directory, any()) } returns Unit
+        every { repository.savePlaylist(directory, playlist) } returns Unit
 
         val result = service.addTrackToPlaylist(directory, playlistName, track)
 
@@ -109,7 +108,7 @@ class PlaylistServiceTest {
         val playlist = Playlist(playlistName, mutableListOf(track))
 
         every { repository.getPlaylist(directory, playlistName) } returns playlist
-        every { repository.savePlaylist(directory, any()) } returns Unit
+        every { repository.savePlaylist(directory, playlist) } returns Unit
 
         val result = service.removeTrackFromPlaylist(directory, playlistName, track)
 

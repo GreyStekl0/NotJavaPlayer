@@ -30,7 +30,7 @@ class ConsoleUI(
     }
 
     private fun processUserChoice(): Boolean {
-        val choice = inputReader.readIntOrNull()
+        val choice = readln().toIntOrNull()
         var shouldContinue = true
 
         if (choice == null) {

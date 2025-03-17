@@ -3,13 +3,12 @@ package ui
 import service.IDirectoryService
 import java.io.File
 
-class InputReader {
-    fun readLine(): String = readln()
-
-    fun readIntOrNull(): Int? = readLine().toIntOrNull()
-
+class InputReader(
+    private val reader: () -> String = ::readln,
+    private val writer: (String) -> Unit = ::println,
+) {
     fun requestMusicDirectory(directoryService: IDirectoryService): File {
-        println(
+        writer(
             """
             Здравствуй дорогой пользователь
             Для работы "NOTJavaPlayer" введите путь к папке с музыкой
@@ -18,7 +17,7 @@ class InputReader {
         )
 
         while (true) {
-            val directoryInput = readLine()
+            val directoryInput = reader()
 
             if (directoryInput.replace(" ", "") == "") {
                 return directoryService.getDefaultDirectory()
@@ -28,7 +27,7 @@ class InputReader {
             if (directory.exists()) {
                 return directory
             } else {
-                println("Папка не найдена, попробуй еще раз")
+                writer("Папка не найдена, попробуй еще раз")
             }
         }
     }
