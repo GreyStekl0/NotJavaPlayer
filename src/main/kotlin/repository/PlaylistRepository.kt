@@ -18,6 +18,11 @@ class PlaylistRepository(
             val track = metadataService.createTrack(file)
             allSongs.tracks.add(track)
         }
+
+        val sortedTracks = allSongs.tracks.sortedWith(compareBy({ it.artist }, { it.title }))
+        allSongs.tracks.clear()
+        allSongs.tracks.addAll(sortedTracks)
+
         return allSongs
     }
 
@@ -26,6 +31,7 @@ class PlaylistRepository(
         return playerDir
             .listFiles()
             ?.filter { it.isFile && it.extension == "json" }
+            ?.sortedBy { it.lastModified() }
             ?.map { it.nameWithoutExtension }
             ?: emptyList()
     }

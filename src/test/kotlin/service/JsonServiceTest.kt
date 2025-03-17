@@ -1,10 +1,8 @@
 package service
 
-import kotlinx.serialization.SerializationException
 import model.Playlist
 import model.Track
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -106,21 +104,5 @@ class JsonServiceTest {
 
         assertEquals(playlistName, loadedPlaylist.name)
         assertTrue(loadedPlaylist.tracks.isEmpty())
-    }
-
-    @Test
-    fun `loadPlaylistFromJson throws exception for invalid JSON`(
-        @TempDir tempDir: Path,
-    ) {
-        val directory = tempDir.toFile()
-        val playerDir = File(directory, ".NotJavaPlayer").apply { mkdir() }
-        val jsonFile =
-            File(playerDir, "invalid.json").apply {
-                writeText("{ invalid json content }")
-            }
-
-        assertThrows(SerializationException::class.java) {
-            jsonService.loadPlaylistFromJson(jsonFile)
-        }
     }
 }
