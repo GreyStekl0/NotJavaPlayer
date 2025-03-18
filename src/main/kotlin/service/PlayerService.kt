@@ -51,7 +51,10 @@ class PlayerService : IPlayerService {
     }
 
     override fun pauseAndResumeTrack() {
-        if (!isPlaying) return
+        if (!isPlaying) {
+            println("Нет активного трека")
+            return
+        }
 
         if (isPaused) {
             try {

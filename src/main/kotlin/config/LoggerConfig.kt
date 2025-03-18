@@ -10,6 +10,5 @@ object LoggerConfig {
 
         // Настройка SLF4J Simple Logger
         System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "ERROR")
-// System.setProperty("org.slf4j.simpleLogger.log.javazoom.jlgui.basicplayer", "OFF")
     }
 }
