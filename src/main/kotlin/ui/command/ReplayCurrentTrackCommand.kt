@@ -6,6 +6,8 @@ class ReplayCurrentTrackCommand(
     private val playbackManager: PlaybackManager,
 ) : Command {
     override fun execute() {
-        playbackManager.replayCurrentTrack()
+        if (!playbackManager.replayCurrentTrack()) {
+            println("Сначала выберите плейлист для воспроизведения")
+        }
     }
 }

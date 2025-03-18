@@ -19,28 +19,32 @@ class PlaybackManager(
         }
     }
 
-    fun playCurrentTrack() {
+    fun playCurrentTrack(): Boolean =
         if (trackIndex in currentPlaylist.indices) {
             val track = currentPlaylist[trackIndex]
             playerService.playTrack(track, playerListener)
+            true
+        } else {
+            false
         }
-    }
 
-    fun playPreviousTrack() {
+    fun playPreviousTrack(): Boolean =
         if (currentPlaylist.isNotEmpty()) {
             trackIndex = (trackIndex - 1 + currentPlaylist.size) % currentPlaylist.size
             playCurrentTrack()
+            true
+        } else {
+            false
         }
-    }
 
-    fun playNextTrack() {
+    fun playNextTrack(): Boolean =
         if (currentPlaylist.isNotEmpty()) {
             trackIndex = (trackIndex + 1) % currentPlaylist.size
             playCurrentTrack()
+            true
+        } else {
+            false
         }
-    }
 
-    fun replayCurrentTrack() {
-        playCurrentTrack()
-    }
+    fun replayCurrentTrack(): Boolean = playCurrentTrack()
 }

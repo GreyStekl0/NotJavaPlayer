@@ -6,6 +6,8 @@ class PlayNextTrackCommand(
     private val playbackManager: PlaybackManager,
 ) : Command {
     override fun execute() {
-        playbackManager.playNextTrack()
+        if (!playbackManager.playNextTrack()) {
+            println("Сначала выберите плейлист для воспроизведения")
+        }
     }
 }
